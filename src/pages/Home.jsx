@@ -3,16 +3,26 @@ import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 import 'remixicon/fonts/remixicon.css'
 import LocationSearchPanel from "../components/LocationSearchPanel";
+import VehiclePanel from '../components/VehiclePanel'
+import ConfirmRide from "../components/ConfirmRide";
+import LookingForDriver from "../components/LookingForDriver";
+import WaitingForDriver from "../components/WaitingForDriver";
 
 const Home = () => {
     const [pickup, setPickup] = useState("");
     const [destination, setDestination] = useState("");
     const [panelOpen, setPanelOpen] = useState(false);
     const [vehiclePanel, setVehiclePanel] = useState(false);
+    const [confirmRidePanel, setConfirmRidePanel] = useState(false);
+    const [vehicleFound, setVehicleFound] = useState(false);
+    const [waitingForDriver, setWaitingForDriver] = useState(false);
 
     const panelRef = useRef(null);
     const panelCloseRef = useRef(null);
     const vehiclePanelRef = useRef(null);
+    const confirmRidePanelRef = useRef(null);
+    const vehicleFoundRef = useRef(null);
+    const waitingForDriverRef = useRef(null);
 
     const submitHandler = (e) => {
         e.preventDefault();
@@ -51,6 +61,46 @@ const Home = () => {
             })
         }
     }, [vehiclePanel])
+
+    useGSAP(function () {
+        if (confirmRidePanel) {
+            gsap.to(confirmRidePanelRef.current, {
+                transform: 'translateY(0)'
+            })
+        }
+        else {
+            gsap.to(confirmRidePanelRef.current, {
+                transform: 'translateY(100%)'
+            })
+        }
+    }, [confirmRidePanel])
+
+    useGSAP(function () {
+        if (vehicleFound) {
+            gsap.to(vehicleFoundRef.current, {
+                transform: 'translateY(0)'
+            })
+        }
+        else {
+            gsap.to(vehicleFoundRef.current, {
+                transform: 'translateY(100%)'
+            })
+        }
+    }, [vehicleFound])
+
+    useGSAP(function () {
+        if (waitingForDriver) {
+            gsap.to(waitingForDriverRef.current, {
+                transform: 'translateY(0)'
+            })
+        }
+        else {
+            gsap.to(waitingForDriverRef.current, {
+                transform: 'translateY(100%)'
+            })
+        }
+    }, [waitingForDriver])
+
 
     return (
         <div className="h-screen w-screen relative overflow-hidden" >
@@ -120,47 +170,19 @@ const Home = () => {
             </div>
 
             <div ref={vehiclePanelRef} className='fixed w-full z-100 bottom-0 p-5 bg-white translate-y-full'>
+                <VehiclePanel setConfirmRidePanel={setConfirmRidePanel} setVehiclePanel={setVehiclePanel}/>
+            </div>
 
-                <h5>
-                    <i
-                        onClick={() => setVehiclePanel(false)}
-                        className="ri-arrow-down-wide-line absolute top-2 right-2 text-2xl"
-                    >
-                    </i>
-                </h5>
+            <div ref={confirmRidePanelRef} className='fixed w-full z-100 bottom-0 p-5 bg-white translate-y-full'>
+                <ConfirmRide setConfirmRidePanel={setConfirmRidePanel} setVehiclePanel={setVehiclePanel} setVehicleFound={setVehicleFound}/>
+            </div>
 
-                <h4 className="text-xl font-semibold text-gray-800 mb-4">Choose a vehicle</h4>
+            <div ref={vehicleFoundRef} className='fixed w-full z-100 bottom-0 p-5 bg-white translate-y-full'>
+                <LookingForDriver setVehicleFound={setVehicleFound}/>
+            </div>
 
-                <div className="flex p-3 active:border-2 mb-2 active:border-black rounded-xl w-full items-center justify-between shadow-xl">
-                    <img className="h-18 w-18 rounded-full" src="https://i.pinimg.com/originals/14/57/e1/1457e11d2776bae50e365660ec7a0317.gif" alt="" />
-                    <div className='w-1/2'>
-                        <h4 className="font-medium text-md">Cabi Car <span><i className="ri-user-3-line text-orange"></i>4</span></h4>
-                        <h5>2min away</h5>
-                        <p className="font-normal text-xs font-gray-600">Affordable, compact rides</p>
-                    </div>
-                    <h2 className='text-xl font-semibold'>Rs193</h2>
-                </div>
-
-                <div className="flex p-3 active:border-2 mb-2 active:border-black rounded-xl w-full items-center justify-between shadow-xl">
-                    <img className="h-18 w-18 rounded-full" src="https://i.pinimg.com/originals/a0/00/c9/a000c9389172ac9b0fd88bf83a855142.gif" alt="" />
-                    <div className='w-1/2'>
-                        <h4 className="font-medium text-md">Coto <span><i className="ri-user-3-line text-orange"></i>4</span></h4>
-                        <h5>2min away</h5>
-                        <p className="font-normal text-xs font-gray-600">Affordable, compact rides</p>
-                    </div>
-                    <h2 className='text-xl font-semibold'>Rs193</h2>
-                </div>
-
-                <div className="flex p-3 active:border-2 mb-2 active:border-black rounded-xl w-full items-center justify-between shadow-xl">
-                    <img className="h-18 w-18 rounded-full" src="https://i.pinimg.com/originals/1b/09/f2/1b09f2fcb514a13829bbb57721a5404e.gif" alt="" />
-                    <div className='w-1/2'>
-                        <h4 className="font-medium text-md">Cabikes <span><i className="ri-user-3-line text-orange"></i>4</span></h4>
-                        <h5>2min away</h5>
-                        <p className="font-normal text-xs font-gray-600">Affordable, compact rides</p>
-                    </div>
-                    <h2 className='text-xl font-semibold'>Rs193</h2>
-                </div>
-
+            <div ref={waitingForDriverRef} className='fixed w-full z-100 bottom-0 p-5 bg-white translate-y-full'>
+                <WaitingForDriver waitingForDriver={waitingForDriver}/>
             </div>
         </div>
     )
